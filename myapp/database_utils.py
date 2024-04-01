@@ -9,7 +9,7 @@ def connect(chosen_sub_disciplines, rating):
 
     try:
         # Connect to MongoDB connection
-        client = pymongo.MongoClient("mongodb+srv://vishnu:XFLgqyxduKJPRtRt@cluster0.ucuqasf.mongodb.net/CampusRoot",tlsCAFile=certifi.where())
+        client = pymongo.MongoClient(mongo_uri,tlsCAFile=certifi.where())
         db = client.imaginary
         client.admin.command('ping')
         print('Connected to db')

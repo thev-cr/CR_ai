@@ -1,4 +1,4 @@
-# python3==3.10.2
+django
 pymongo
 # blinker==1.7.0
 certifi

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from myapp.database_utils import connect
 import json
 
-pipeline = load('knn_regressor_model.joblib')  # Adjust path as necessary
+pipeline = load('knn_regressor_model.joblib')
 
 
 # Function to predict university rating
