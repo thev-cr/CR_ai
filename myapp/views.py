@@ -9,12 +9,17 @@ import json
 
 pipeline = load('knn_regressor_model.joblib')
 
-
+#TODO custom logging of requests
 # Function to predict university rating
 def predict_uni_rating(ug_gpa, gre):
     input_data = pd.DataFrame({'ug_gpa': [ug_gpa], 'gre': [gre], 'status': 'Accepted'})  # status is dummy here
     predicted_rating = pipeline.predict(input_data)[0]
     return predicted_rating
+
+from django.http import HttpResponse
+
+def home_view(request):
+    return HttpResponse("Welcome to AI Predictions for Campus Root EduTech Pvt. Ltd.")
 
 @csrf_exempt
 def predict(request):
