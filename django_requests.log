@@ -1,0 +1,16 @@
+INFO 2024-04-11 23:37:26,534 middleware Request path: /predict/, Method: POST
+INFO 2024-04-11 23:37:31,930 middleware Response status: 200
+INFO 2024-04-11 23:40:37,366 middleware Full Request Path: /predict/ Method: POST Body: {
+ "ug_gpa": 3.5,
+ "gre": 320,
+ "sub_discipline": ["Computer Sciences","Artificial Intelligence","Machine Learning","Data Science"]
+} 
+
+INFO 2024-04-11 23:40:42,710 middleware Response Status: 200 Content: {"Computer Sciences": [{"Course": "Computer Science - Multimedia and Creative Technologies", "University": "University of Southern California", "Category": "Ambitious", "CID": "65b201be2425607c8576d8c0"}, {"Course": "Computer Science", "University": "University of Chicago", "Category": "Ambitious", "CID": "65b201be2425607c8576d8c1"}, {"Course": "Applied Artificial Intelligence", "University": "Stevens Institute of Technology", "Category": "Moderate", "CID": "65b201be2425607c8576d8eb"}, {"Course": "Information Networking", "University": "Carnegie Mellon University", "Category": "Ambitious", "CID": "65b201be2425607c8576d8f1"}, {"Course": "Electrical, Computer, and Systems Engineering", "University": "Rensselaer Polytechnic Institute", "Category": "Moderate", "CID": "65b201be2425607c8576d908"}, {"Course": "Computer Science", "University": "University of Southern California", "Category": "Ambitious", "CID": "65b201be2425607c8576d90c"}, {"Course": "Computer Science", "University": "Carnegie
+INFO 2024-04-11 23:44:57,957 middleware IP: 127.0.0.1 - Request Path: /predict/ Method: POST Body: {
+ "ug_gpa": 3.5,
+ "gre": 320,
+ "sub_discipline": ["Computer Sciences","Artificial Intelligence","Machine Learning","Data Science"]
+} 
+
+INFO 2024-04-11 23:45:03,223 middleware Response Status: 200 Content: {"Computer Sciences": [{"Course": "Computer Science - Multimedia and Creative Technologies", "University": "University of Southern California", "Category": "Ambitious", "CID": "65b201be2425607c8576d8c0"}, {"Course": "Computer Science", "University": "University of Chicago", "Category": "Ambitious", "CID": "65b201be2425607c8576d8c1"}, {"Course": "Applied Artificial Intelligence", "University": "Stevens Institute of Technology", "Category": "Moderate", "CID": "65b201be2425607c8576d8eb"}, {"Course": "Information Networking", "University": "Carnegie Mellon University", "Category": "Ambitious", "CID": "65b201be2425607c8576d8f1"}, {"Course": "Electrical, Computer, and Systems Engineering", "University": "Rensselaer Polytechnic Institute", "Category": "Moderate", "CID": "65b201be2425607c8576d908"}, {"Course": "Computer Science", "University": "University of Southern California", "Category": "Ambitious", "CID": "65b201be2425607c8576d90c"}, {"Course": "Computer Science", "University": "Carnegie
