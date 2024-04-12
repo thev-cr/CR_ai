@@ -1,3 +1,5 @@
 django_requests.log
 cr_ai/__pycache__/middleware.cpython-311.pyc
 cr_ai/__pycache__/settings.cpython-311.pyc
+myapp/__pycache__/views.cpython-311.pyc
+cr_ai/__pycache__/settings.cpython-311.pyc

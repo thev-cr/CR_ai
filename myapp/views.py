@@ -59,23 +59,20 @@ def predict(request):
             if category != 'Outside Range':
                 matching_universities[str(uni['_id'])] = {'name': uni['name'], 'category': category}
 
-    matching_courses_by_sub_discipline = {sub: [] for sub in chosen_sub_disciplines}
-
+    matching_courses = []  # List to store recommended courses and their details
 
     for course in courses:
         try:
-            if str(course['university']) in matching_universities and course['subDiscipline'].strip() in chosen_sub_disciplines:
-                for sub_discipline in chosen_sub_disciplines:
-                    if course['subDiscipline'].strip() == sub_discipline:
-                        matching_courses_by_sub_discipline[sub_discipline].append({
-                            "Course": course['name'],
-                            "University": matching_universities[str(course['university'])]['name'],
-                            "Category": matching_universities[str(course['university'])]['category'],
-                            "CID": str(course['_id'])
-                        })
+            if str(course['university']) in matching_universities:
+                matching_courses.append({
+                    "Course": course['name'],
+                    "University": matching_universities[str(course['university'])]['name'],
+                    "Category": matching_universities[str(course['university'])]['category'],
+                    "CID": str(course['_id'])
+                })
         except KeyError:
             print(f"Skipping course with ID {str(course['_id'])} due to missing university data.")
             continue
 
     # Convert output data to JSON
-    return JsonResponse(matching_courses_by_sub_discipline)
+    return JsonResponse(matching_courses, safe=False)
