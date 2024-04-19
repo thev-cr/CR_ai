@@ -1,25 +1,46 @@
 # myapp/views.py
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 from joblib import load
 from dotenv import load_dotenv
 from myapp.database_utils import connect
 import json
+from bson import ObjectId
 
 pipeline = load('knn_regressor_model.joblib')
 
-#TODO custom logging of requests
+def convert_objectid_to_string(data):
+    if isinstance(data, dict):
+        return {k: convert_objectid_to_string(v) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [convert_objectid_to_string(v) for v in data]
+    elif isinstance(data, ObjectId):
+        return str(data)
+    else:
+        return data
+    
+
 # Function to predict university rating
 def predict_uni_rating(ug_gpa, gre):
     input_data = pd.DataFrame({'ug_gpa': [ug_gpa], 'gre': [gre], 'status': 'Accepted'})  # status is dummy here
     predicted_rating = pipeline.predict(input_data)[0]
     return predicted_rating
 
-from django.http import HttpResponse
+
 
 def home_view(request):
     return HttpResponse("Welcome to AI Predictions for Campus Root EduTech Pvt. Ltd.")
+
+
+def categorize_university(uni_rating, predicted_rating):
+    if predicted_rating + 0.65 < uni_rating <= predicted_rating + 1:
+        return 'Ambitious'
+    elif predicted_rating + 0.25 <= uni_rating <= predicted_rating + 0.65:
+        return 'Moderate'
+    elif uni_rating < predicted_rating + 0.1896:
+        return 'Safe'
+    return 'Outside Range'
 
 @csrf_exempt
 def predict(request):
@@ -33,21 +54,8 @@ def predict(request):
     else:
         chosen_sub_disciplines = [sub.strip() for sub in chosen_sub_disciplines]
 
-    # Predict the university rating
     predicted_rating = predict_uni_rating(ug_gpa, gre)
-
-    # Fetch filtered universities and courses based on the chosen sub-disciplines
     universities, courses = connect(chosen_sub_disciplines, predicted_rating)
-
-    # Function to categorize university
-    def categorize_university(uni_rating, predicted_rating):
-        if predicted_rating - 1 <= uni_rating < predicted_rating - 0.35:
-            return 'Safe'
-        elif predicted_rating - 0.35 <= uni_rating <= predicted_rating + 0.25:
-            return 'Moderate'
-        elif predicted_rating + 0.25 < uni_rating <= predicted_rating + 1:
-            return 'Ambitious'
-        return 'Outside Range'
 
     matching_universities = {}
     for uni in universities:
@@ -59,20 +67,26 @@ def predict(request):
             if category != 'Outside Range':
                 matching_universities[str(uni['_id'])] = {'name': uni['name'], 'category': category}
 
-    matching_courses = []  # List to store recommended courses and their details
+    # Initialize lists for Safe, Moderate, Ambitious, and Remaining courses
+    output_courses = []
 
     for course in courses:
-        try:
-            if str(course['university']) in matching_universities:
-                matching_courses.append({
+    # Assuming `universities` is a list of dictionaries where each dictionary represents a university
+    # and includes the '_id' and 'uni_rating' keys.
+        university_id = str(course['university'])
+        university = next((uni for uni in universities if str(uni['_id']) == university_id), None)
+        if university:
+            uni_rating = university['uni_rating']
+            category = categorize_university(uni_rating, predicted_rating)
+            if category != 'Outside Range':
+                output_courses.append ({
                     "Course": course['name'],
-                    "University": matching_universities[str(course['university'])]['name'],
-                    "Category": matching_universities[str(course['university'])]['category'],
+                    "University": university['name'],
+                    "Category": category,
                     "CID": str(course['_id'])
                 })
-        except KeyError:
-            print(f"Skipping course with ID {str(course['_id'])} due to missing university data.")
-            continue
 
+
+    
     # Convert output data to JSON
-    return JsonResponse(matching_courses, safe=False)
+    return JsonResponse(output_courses, safe=False)
