@@ -3,30 +3,34 @@ import certifi
 import pymongo
 
 
-def connect(chosen_sub_disciplines, rating):
+def connect(chosen_sub_disciplines, rating, country_preference):
     # MongoDB connection parameters
     mongo_uri = os.environ.get('MONGO_URI')
 
     try:
         # Connect to MongoDB connection
-        client = pymongo.MongoClient(mongo_uri,tlsCAFile=certifi.where())
+        client = pymongo.MongoClient(mongo_uri, tlsCAFile=certifi.where())
         db = client.imaginary
         client.admin.command('ping')
         print('Connected to db')
     except pymongo.errors.ConnectionFailure as e:
         print("Error connecting to MongoDB:", e)
         return [], []
-    
+
     collection_name = "universities"
     collection = db[collection_name]
 
     collection_name_c = "courses"
     collection_c = db[collection_name_c]
 
-    # Query universities based on the rating threshold
-    universities = list(collection.find({'uni_rating': {'$gt': rating}}))
+    # Query universities based on the rating threshold and country preference
+    universities = list(collection.find({
+        'uni_rating': {'$gt': rating},
+        'location.country': country_preference
+    }))
+    
     if not universities:
-        print("Error: No universities found with a rating greater than the specified threshold.")
+        print(f"Error: No universities found in {country_preference} with a rating greater than the specified threshold.")
         universities = []
 
     # Extract university IDs
